@@ -135,7 +135,7 @@ public class MainController {
             }
 
             repository.agregar(vivienda);
-            lblMensaje.setText(codigo + " (" + tipo + ") registrada correctamente.");
+            lblMensaje.setText(codigo + " (" + tipo + ") Registrada correctamente.");
             limpiarFormulario();
 
         } catch (IllegalArgumentException e) {
@@ -145,7 +145,15 @@ public class MainController {
 
     @FXML
     private void onEliminar() {
-        // pendiente
+        Vivienda seleccionada = tblViviendas.getSelectionModel().getSelectedItem();
+
+        if (seleccionada == null) {
+            lblMensaje.setText("Seleccionar una vivienda de la tabla para eliminarla");
+            return;
+        }
+        repository.eliminar(seleccionada);
+        lblMensaje.setText(seleccionada.getCodigo() + " (" + seleccionada.getTipo() + ") Eliminada.");
+
     }
 
     private void limpiarFormulario() {
