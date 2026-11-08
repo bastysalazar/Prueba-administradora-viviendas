@@ -38,8 +38,8 @@
       </GridPane>
       <HBox prefHeight="2.0" prefWidth="580.0">
          <children>
-            <Button fx:id="btnRegistrar" mnemonicParsing="false" text="Registrar" />
-            <Button fx:id="btnEliminar" mnemonicParsing="false" text="Eliminar" />
+             <Button fx:id="btnRegistrar" onAction="#onRegistrar" mnemonicParsing="false" text="Registrar" />
+             <Button fx:id="btnEliminar" onAction="#onEliminar" mnemonicParsing="false" text="Eliminar" />
          </children>
       </HBox>
       <TableView fx:id="tblViviendas" prefHeight="195.0" prefWidth="580.0">
