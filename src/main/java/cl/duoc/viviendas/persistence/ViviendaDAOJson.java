@@ -38,12 +38,13 @@ public class ViviendaDAOJson implements ViviendaDAO {
         for (Vivienda v : viviendas) {
             if (v instanceof Departamento d) {
                 departamentos.add(d);
+            } else if (v instanceof Casa c) {
+                casas.add(c);
             }
-            // TU TURNO: si es Casa, agregarla a la lista de casas
         }
 
         escribirArchivo(ARCHIVO_DEPARTAMENTOS, departamentos);
-        // TU TURNO: escribir también las casas en ARCHIVO_CASAS
+        escribirArchivo(ARCHIVO_CASAS, casas);
     }
 
     private <T extends Vivienda> List<T> leerArchivo(String nombre, Class<T[]> tipo) throws IOException {
@@ -62,4 +63,5 @@ public class ViviendaDAOJson implements ViviendaDAO {
             gson.toJson(datos, escritor);
         }
     }
+
 }

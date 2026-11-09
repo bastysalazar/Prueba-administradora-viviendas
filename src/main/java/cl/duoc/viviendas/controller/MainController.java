@@ -3,11 +3,14 @@ package cl.duoc.viviendas.controller;
 import cl.duoc.viviendas.model.Casa;
 import cl.duoc.viviendas.model.Departamento;
 import cl.duoc.viviendas.model.Vivienda;
+import cl.duoc.viviendas.persistence.ViviendaDAOJson;
 import cl.duoc.viviendas.persistence.ViviendaRepository;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.io.IOException;
 
 public class MainController {
 
@@ -30,7 +33,7 @@ public class MainController {
     @FXML private TableColumn<Vivienda, Integer> colHabitaciones;
     @FXML private TableColumn<Vivienda, String> colCosto;
 
-    private final ViviendaRepository repository = new ViviendaRepository();
+    private final ViviendaRepository repository = new ViviendaRepository(new ViviendaDAOJson());
 
     @FXML
     public void initialize() {
@@ -45,6 +48,12 @@ public class MainController {
         colHabitaciones.setCellValueFactory(new PropertyValueFactory<>("habitaciones"));
         colCosto.setCellValueFactory(celda ->
                 new SimpleStringProperty("$" + String.format("%,.0f", celda.getValue().calcularCostoArriendo())));
+
+        try {
+            repository.cargar();
+        } catch (IOException e) {
+            lblMensaje.setText("Error al leer los archivos: " + e.getMessage());
+        }
     }
 
     private void actualizarCamposSegunTipo() {
@@ -135,11 +144,13 @@ public class MainController {
             }
 
             repository.agregar(vivienda);
-            lblMensaje.setText(codigo + " (" + tipo + ") Registrada correctamente.");
+            lblMensaje.setText(codigo + " (" + tipo + ") registrada correctamente.");
             limpiarFormulario();
 
         } catch (IllegalArgumentException e) {
             lblMensaje.setText(e.getMessage());
+        } catch (IOException e) {
+            lblMensaje.setText("Error al guardar los archivos: " + e.getMessage());
         }
     }
 
@@ -148,12 +159,16 @@ public class MainController {
         Vivienda seleccionada = tblViviendas.getSelectionModel().getSelectedItem();
 
         if (seleccionada == null) {
-            lblMensaje.setText("Seleccionar una vivienda de la tabla para eliminarla");
+            lblMensaje.setText("Debe seleccionar una vivienda de la tabla para eliminarla.");
             return;
         }
-        repository.eliminar(seleccionada);
-        lblMensaje.setText(seleccionada.getCodigo() + " (" + seleccionada.getTipo() + ") Eliminada.");
 
+        try {
+            repository.eliminar(seleccionada);
+            lblMensaje.setText(seleccionada.getCodigo() + " (" + seleccionada.getTipo() + ") eliminada.");
+        } catch (IOException e) {
+            lblMensaje.setText("Error al guardar los archivos: " + e.getMessage());
+        }
     }
 
     private void limpiarFormulario() {
